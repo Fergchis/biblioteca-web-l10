@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+header {
+  border-bottom: 1px solid var(--linea);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav a {
+  color: var(--apagado);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid transparent;
+}
+
+nav a:hover {
+  color: var(--texto);
+}
+
+nav a.activo {
+  color: var(--acento);
+  border-bottom-color: var(--acento);
+}
+
+footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--linea);
+  font-size: 0.8125rem;
+}

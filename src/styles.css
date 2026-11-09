@@ -1,0 +1,105 @@
+/*
+ * Lo mínimo para que las tablas se lean. No es el tema del laboratorio:
+ * el tema es de dónde salen los datos y quién tiene permiso de verlos.
+ */
+
+:root {
+  --fondo: #fbfbfa;
+  --texto: #1a1a1a;
+  --apagado: #6b6b6b;
+  --linea: #e3e3e0;
+  --acento: #2d5b8a;
+  --error-fondo: #fdf4f4;
+  --error-linea: #e5c9c9;
+  --error-texto: #8a2d2d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #17181a;
+    --texto: #e8e8e6;
+    --apagado: #9a9a97;
+    --linea: #2e3033;
+    --acento: #7aa9d6;
+    --error-fondo: #241b1b;
+    --error-linea: #4a3232;
+    --error-texto: #e0a0a0;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+h2 {
+  font-size: 1.0625rem;
+  margin: 0 0 1rem;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+  background: color-mix(in srgb, var(--texto) 7%, transparent);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+a {
+  color: var(--acento);
+}
+
+.apagado {
+  color: var(--apagado);
+  font-size: 0.9375rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+th {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--apagado);
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.error {
+  background: var(--error-fondo);
+  border: 1px solid var(--error-linea);
+  border-left: 3px solid var(--error-texto);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+
+.error p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.error p:last-child {
+  margin-bottom: 0;
+}
+
+.error strong {
+  color: var(--error-texto);
+}

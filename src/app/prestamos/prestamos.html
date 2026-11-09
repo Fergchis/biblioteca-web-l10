@@ -1,0 +1,52 @@
+<h2>Préstamos</h2>
+
+@if (cargando()) {
+  <p class="apagado">Pidiéndole los préstamos al gateway…</p>
+} @else if (estado() === 200) {
+  <table>
+    <thead>
+      <tr><th class="num">#</th><th>Lector</th><th>Vence</th><th>Estado</th></tr>
+    </thead>
+    <tbody>
+      @for (prestamo of prestamos(); track prestamo.id) {
+        <tr>
+          <td class="num">{{ prestamo.id }}</td>
+          <td>{{ prestamo.lector }}</td>
+          <td>{{ prestamo.vence }}</td>
+          <td>{{ prestamo.devuelto ? 'devuelto' : 'en préstamo' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <div class="error">
+    <p><strong>El gateway respondió {{ estado() }}.</strong></p>
+
+    @switch (estado()) {
+      @case (401) {
+        <p>
+          <em>No sé quién eres.</em> Sin token, o con uno que no pasó la
+          revisión. Antes del tramo 8, esto es lo esperado.
+        </p>
+      }
+      @case (403) {
+        <p>
+          <em>Sé quién eres, y no te alcanza.</em> Esta ruta exige el grupo
+          <code>bibliotecarios</code> (tramo 7.4). Si entraste como
+          <code>invitado@biblioteca.test</code>, que está en
+          <code>lectores</code>, <strong>este 403 es la respuesta correcta</strong>
+          y es la prueba de que tu autorización por rol funciona.
+        </p>
+      }
+      @case (0) {
+        <p>
+          No hubo respuesta: el gateway no está en el 8080, o su CORS no
+          permite <code>http://localhost:4200</code>.
+        </p>
+      }
+      @default {
+        <p>Mira la consola del navegador y la terminal del gateway.</p>
+      }
+    }
+  </div>
+}

@@ -1,0 +1,34 @@
+<header>
+  <h1>Biblioteca</h1>
+  <nav>
+    <a routerLink="/libros" routerLinkActive="activo">Catálogo</a>
+    @if (esBibliotecario()) {
+      <a routerLink="/prestamos" routerLinkActive="activo">Préstamos</a>
+    }
+  </nav>
+
+  <button (click)="entrar()">Entrar</button>
+
+  <button (click)="cargarPanel()" [disabled]="cargando()">Ver mis prestamos</button>
+  <button (click)="pedirPrestamo(3)">Pedir el libro 3</button>
+
+  <ul>
+    @for (p of panel(); track p.id) {
+      <li>{{ p.libro.titulo }} — {{ p.libro.autor }}, hasta el {{ p.hasta }}</li>
+    } @empty {
+      <li>No tienes prestamos.</li>
+    }
+  </ul>
+</header>
+
+<main>
+  <router-outlet />
+</main>
+
+<footer>
+  <p class="apagado">
+    El gateway está en <code>http://localhost:8080</code>. Si esta página no
+    muestra datos, revisa que estén corriendo los dos microservicios y el
+    gateway. <a href="https://github.com/Umbingelelo/biblioteca-gateway">biblioteca-gateway</a>
+  </p>
+</footer>

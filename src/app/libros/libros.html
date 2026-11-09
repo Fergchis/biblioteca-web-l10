@@ -1,0 +1,61 @@
+<h2>Catálogo</h2>
+
+@if (cargando()) {
+  <p class="apagado">Pidiéndole el catálogo al gateway…</p>
+} @else if (estado() === 200) {
+  <table>
+    <thead>
+      <tr><th>Título</th><th>Autor</th><th>Año</th><th class="num">Copias</th></tr>
+    </thead>
+    <tbody>
+      @for (libro of libros(); track libro.id) {
+        <tr>
+          <td>{{ libro.titulo }}</td>
+          <td>{{ libro.autor }}</td>
+          <td>{{ libro.anio }}</td>
+          <td class="num">{{ libro.copias }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <!--
+    Este bloque es material del laboratorio, no un detalle de presentación.
+    Antes del tramo 8 vas a ver un 401 acá, y eso significa que todo funciona:
+    el gateway está pidiendo un token que todavía nadie le manda.
+  -->
+  <div class="error">
+    <p><strong>El gateway respondió {{ estado() }}.</strong></p>
+
+    @switch (estado()) {
+      @case (401) {
+        <p>
+          <em>No sé quién eres.</em> La petición salió sin header
+          <code>Authorization</code>, o con un token que no pasó la revisión del
+          tramo 7. <strong>Antes del tramo 8 esto es lo correcto</strong>: es la
+          puerta funcionando.
+        </p>
+      }
+      @case (403) {
+        <p>
+          <em>Sé quién eres, y no te alcanza.</em> El token es válido pero le
+          falta el scope <code>biblioteca/libros.leer</code> o el grupo que la
+          ruta exige. Revisa el tramo 8.5: si entraste con
+          <code>signIn()</code> en vez de <code>signInWithRedirect()</code>, el
+          token salió sin tus scopes personalizados.
+        </p>
+      }
+      @case (0) {
+        <p>
+          Código <code>0</code> no es una respuesta HTTP: es que
+          <strong>no hubo respuesta</strong>. O el gateway no está corriendo en
+          el 8080, o su CORS no permite el origen
+          <code>http://localhost:4200</code>. Mira la consola del navegador.
+        </p>
+      }
+      @default {
+        <p>Mira la consola del navegador y la terminal del gateway.</p>
+      }
+    }
+  </div>
+}
