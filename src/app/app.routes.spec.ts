@@ -9,9 +9,10 @@ import { routes } from './app.routes';
 describe('las rutas', () => {
   const caminos = routes.map((r) => r.path);
 
-  it('declara catálogo, préstamos y el callback', () => {
+  it('declara catálogo, préstamos, el panel en vivo y el callback', () => {
     expect(caminos).toContain('libros');
     expect(caminos).toContain('prestamos');
+    expect(caminos).toContain('panel');
     expect(caminos).toContain('callback');
   });
 

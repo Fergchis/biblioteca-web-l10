@@ -1,0 +1,110 @@
+<h2>Panel en vivo</h2>
+
+@if (estado() === 200 && datos(); as d) {
+  <p class="apagado">
+    Maratón de lectura hasta las <strong>{{ d.hasta ?? '—' }}</strong> (hora de Chile, según
+    <code>emitidoEn</code>). Se actualiza cada 5 segundos; van {{ refrescos() }} refrescos.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="num">Lecturas en curso</th><th class="num">Iniciadas</th>
+        <th class="num">Terminadas</th><th class="num">Préstamos</th><th>Máximo en curso</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="num"><strong>{{ d.totales.lecturasEnCurso }}</strong></td>
+        <td class="num">{{ d.totales.lecturasIniciadas }}</td>
+        <td class="num">{{ d.totales.lecturasTerminadas }}</td>
+        <td class="num">{{ d.totales.prestamos }}</td>
+        <td>
+          @if (d.maximoEnCurso; as m) { {{ m.lecturas }} a las {{ m.hora }} } @else { — }
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Alertas</h3>
+  <p class="apagado">
+    Más del {{ d.regla.umbralError * 100 }}% de las lecturas terminadas de un libro en error, en ventanas de
+    {{ d.regla.ventanaMinutos }} minutos, con al menos {{ d.regla.minimoTerminadas }} terminadas.
+  </p>
+  @if (d.alertas.length > 0) {
+    <div class="error">
+      @for (a of d.alertas; track a.libroId + a.desde) {
+        <p>
+          <strong>Libro {{ a.libroId }}</strong>{{ a.titulo ? ' «' + a.titulo + '»' : '' }}, de {{ a.desde }} a
+          {{ a.hasta }}: {{ a.enError }} de {{ a.terminadas }} lecturas terminadas en error ({{ a.porcentaje }}%).
+        </p>
+      }
+    </div>
+  } @else {
+    <p>Sin alertas.</p>
+  }
+
+  <h3>Últimos minutos</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Minuto</th><th class="num">Iniciadas</th><th class="num">Terminadas</th>
+        <th class="num">En curso al cierre</th><th class="num">Préstamos</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (m of ultimosMinutos(); track m.minuto) {
+        <tr>
+          <td>{{ m.hora }}</td>
+          <td class="num">{{ m.iniciadas }}</td>
+          <td class="num">{{ m.terminadas }}</td>
+          <td class="num">{{ m.enCurso }}</td>
+          <td class="num">{{ m.prestamos }}</td>
+        </tr>
+      } @empty {
+        <tr><td colspan="5">Todavía no llega ningún evento. ¿Corre el simulador?</td></tr>
+      }
+    </tbody>
+  </table>
+
+  <h3>Libros con más lecturas en curso</h3>
+  <table>
+    <thead>
+      <tr><th class="num">Libro</th><th>Título</th><th class="num">En curso</th><th class="num">Préstamos</th></tr>
+    </thead>
+    <tbody>
+      @for (l of librosConMasLecturas(); track l.libroId) {
+        <tr>
+          <td class="num">{{ l.libroId }}</td>
+          <td>{{ l.titulo ?? '(sin catálogo)' }}</td>
+          <td class="num">{{ l.enCurso }}</td>
+          <td class="num">{{ l.prestamos }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else if (estado() === null) {
+  <p class="apagado">Pidiéndole el panel al gateway…</p>
+} @else {
+  <div class="error">
+    <p><strong>El gateway respondió {{ estado() }}.</strong></p>
+    @switch (estado()) {
+      @case (403) {
+        <p>
+          <em>Sé quién eres, y no te alcanza.</em> El panel en vivo es solo para el grupo
+          <code>bibliotecarios</code>, el administrador de la biblioteca. Con otro usuario,
+          <strong>este 403 es la respuesta correcta</strong>.
+        </p>
+      }
+      @case (401) {
+        <p><em>No sé quién eres.</em> Sin token, o con uno vencido: vuelve a entrar.</p>
+      }
+      @case (503) {
+        <p>El BFF no pudo leer el panel: revisa que <code>biblioteca-eventos</code> esté arriba.</p>
+      }
+      @default {
+        <p>Mira la consola del navegador y la terminal del gateway.</p>
+      }
+    }
+  </div>
+}
