@@ -27,6 +27,22 @@ export type Prestamo = {
   devuelto: boolean;
 };
 
+/** GET /v1/panel/en-vivo (L10). Las horas vienen en hora de Chile; `minuto` es el instante en UTC. */
+export type PanelEnVivo = {
+  zonaHoraria: string;
+  generadoEn: string;
+  hasta: string | null;
+  totales: { lecturasIniciadas: number; lecturasTerminadas: number; lecturasEnCurso: number; prestamos: number };
+  maximoEnCurso: { hora: string; lecturas: number } | null;
+  porMinuto: { minuto: string; hora: string; iniciadas: number; terminadas: number; enCurso: number; prestamos: number }[];
+  porLibro: { libroId: string; titulo: string | null; enCurso: number; prestamos: number }[];
+  regla: { umbralError: number; minimoTerminadas: number; ventanaMinutos: number };
+  alertas: {
+    libroId: string; titulo: string | null; desde: string; hasta: string;
+    terminadas: number; enError: number; porcentaje: number;
+  }[];
+};
+
 /**
  * El único que habla con el gateway.
  *
@@ -46,5 +62,9 @@ export class Biblioteca {
 
   prestamos(): Observable<Prestamo[]> {
     return this.http.get<Prestamo[]>(`${GATEWAY}/v1/prestamos`);
+  }
+
+  panelEnVivo(): Observable<PanelEnVivo> {
+    return this.http.get<PanelEnVivo>(`${GATEWAY}/v1/panel/en-vivo`);
   }
 }
