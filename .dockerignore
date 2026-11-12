@@ -1,6 +1,8 @@
 node_modules
 dist
-.angular
+*.tsbuildinfo
 .env
 .env.*
+!.env.example
 .git
+.github
